@@ -118,12 +118,19 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = Task::find($id);
+        
+        //dd($task);
 
-        return view('tasks.show', [
-            'task' => $task,
-        ]);
+        if (\Auth::id() === $task->user_id) {
+            return view('tasks.show', [
+                'task' => $task,
+            ]);
+        }
+        
+        return redirect('/');
+        
     }
-
+    
     /**
      * Show the form for editing the specified resource.
      *
@@ -133,12 +140,12 @@ class TasksController extends Controller
     public function edit($id)
     {
         $task = Task::find($id);
-
+        
         return view('tasks.edit', [
             'task' => $task,
         ]);
     }
-
+    
     /**
      * Update the specified resource in storage.
      *
@@ -154,9 +161,12 @@ class TasksController extends Controller
         ]);
         
         $task = Task::find($id);
-        $task->status = $request->status;
-        $task->content = $request->content;
-        $task->save();
+        
+        if (\Auth::id() === $task->user_id) {
+            $task->status = $request->status;
+            $task->content = $request->content;
+            $task->save();
+        }
         
         return redirect('/');
         
@@ -165,7 +175,7 @@ class TasksController extends Controller
             'status'  => $request->status,
             'content' => $request->content,
         ]);
-
+        
         $user = \Auth::user();
         $tasklists = $user->tasklists()->orderBy('created_at', 'desc')->paginate(10);
         
@@ -173,9 +183,9 @@ class TasksController extends Controller
             'user' => $user,
             'tasks' => $tasklists,
         ];
-
+        
         //dd($data);
-
+        
         return view('welcome',$data);
         */
         
@@ -184,11 +194,11 @@ class TasksController extends Controller
         $task->status = $request->status;
         $task->content = $request->content;
         $task->save();
-
+        
         return redirect('/');
         */
     }
-
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -213,14 +223,14 @@ class TasksController extends Controller
             'user' => $user,
             'tasks' => $tasklists,
         ];
-
+        
         //dd($data);
-
+        
         return view('welcome',$data);
         */
         
         //$task->delete();
-
+        
         //return redirect('/');
     }
 }
