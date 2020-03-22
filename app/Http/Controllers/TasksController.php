@@ -15,14 +15,6 @@ class TasksController extends Controller
      */
     public function index()
     {
-        /*
-        $tasks = Task::all();
-
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
-        */
-        
         $data = [];
         if (\Auth::check()) {
             $user = \Auth::user();
@@ -32,21 +24,8 @@ class TasksController extends Controller
                 'user' => $user,
                 'tasks' => $tasklists,
             ];
-            
-            //dd($data);
-            
-            //return view('welcome', $data);
-            //return view('tasks.index', $data);
-            
-/*        } else {
-            $data = [];
-            
-            return view('welcome', $data);
-*/
         }
-        
-        //dd($data);
-        
+
         return view('welcome', $data);
         
     }
@@ -84,29 +63,6 @@ class TasksController extends Controller
         ]);
 
         return redirect('/');
-        
-        /*
-        $user = \Auth::user();
-        $tasklists = $user->tasklists()->orderBy('created_at', 'desc')->paginate(10);
-            
-        $data = [
-            'user' => $user,
-            'tasks' => $tasklists,
-        ];
-
-        //dd($data);
-
-        return view('welcome',$data);
-        */
-        
-        /*
-        $task = new Task;
-        $task->status = $request->status;
-        $task->content = $request->content;
-        $task->save();
-
-        return redirect('/');
-        */
     }
 
     /**
@@ -119,8 +75,6 @@ class TasksController extends Controller
     {
         $task = Task::find($id);
         
-        //dd($task);
-
         if (\Auth::id() === $task->user_id) {
             return view('tasks.show', [
                 'task' => $task,
@@ -141,9 +95,11 @@ class TasksController extends Controller
     {
         $task = Task::find($id);
         
-        return view('tasks.edit', [
-            'task' => $task,
-        ]);
+        if (\Auth::id() === $task->user_id) {
+            return view('tasks.edit', [
+                'task' => $task,
+            ]);
+        }
     }
     
     /**
@@ -170,33 +126,6 @@ class TasksController extends Controller
         
         return redirect('/');
         
-        /*
-        $request->user()->tasklists()->save([
-            'status'  => $request->status,
-            'content' => $request->content,
-        ]);
-        
-        $user = \Auth::user();
-        $tasklists = $user->tasklists()->orderBy('created_at', 'desc')->paginate(10);
-        
-        $data = [
-            'user' => $user,
-            'tasks' => $tasklists,
-        ];
-        
-        //dd($data);
-        
-        return view('welcome',$data);
-        */
-        
-        /*
-        $task = Task::find($id);
-        $task->status = $request->status;
-        $task->content = $request->content;
-        $task->save();
-        
-        return redirect('/');
-        */
     }
     
     /**
@@ -212,25 +141,6 @@ class TasksController extends Controller
         if (\Auth::id() === $task->user_id) {
             $task->delete();
         }
-        
         return redirect('/');
-        
-        /*
-        $user = \Auth::user();
-        $tasklists = $user->tasklists()->orderBy('created_at', 'desc')->paginate(10);
-        
-        $data = [
-            'user' => $user,
-            'tasks' => $tasklists,
-        ];
-        
-        //dd($data);
-        
-        return view('welcome',$data);
-        */
-        
-        //$task->delete();
-        
-        //return redirect('/');
     }
 }
